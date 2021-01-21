@@ -1,0 +1,76 @@
+package com.jy.xingtandemo.adap;
+
+import android.content.Context;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.alibaba.android.vlayout.DelegateAdapter;
+import com.alibaba.android.vlayout.LayoutHelper;
+import com.alibaba.android.vlayout.layout.ColumnLayoutHelper;
+import com.bumptech.glide.Glide;
+import com.jy.xingtandemo.R;
+import com.jy.xingtandemo.bean.HomeBannerBean;
+import com.youth.banner.Banner;
+import com.youth.banner.loader.ImageLoader;
+
+import java.util.ArrayList;
+
+public class LanGeAdapter extends DelegateAdapter.Adapter {
+
+    private ColumnLayoutHelper columnLayoutHelper;
+    private ArrayList<HomeBannerBean.DataDTO.AdvListDTO> banner;
+
+    public LanGeAdapter(ColumnLayoutHelper columnLayoutHelper, ArrayList<HomeBannerBean.
+            DataDTO.AdvListDTO> banner) {
+        this.columnLayoutHelper = columnLayoutHelper;
+        this.banner = banner;
+    }
+    @Override
+    public LayoutHelper onCreateLayoutHelper() {
+        return columnLayoutHelper;
+    }
+
+    @NonNull
+    @Override
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View inflate = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_home_banner, parent, false);
+        return new BannerViewHolder(inflate);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        BannerViewHolder bannerViewHolder = (BannerViewHolder) holder;
+        for (int i = 0; i < banner.size(); i++) {
+            Log.e("TAG", "onBindViewHolder: "+banner.get(i).getAdvImg());
+        }
+        bannerViewHolder.bannerid.setImages(banner)
+                .setImageLoader(new ImageLoader() {
+                    @Override
+                    public void displayImage(Context context, Object path, ImageView imageView) {
+                        HomeBannerBean.DataDTO.AdvListDTO bannerDTO = (HomeBannerBean.DataDTO.AdvListDTO) path;
+                        Glide.with(context).load(bannerDTO.getAdvImg()).into(imageView);
+                    }
+                }).start();
+    }
+
+    @Override
+    public int getItemCount() {
+        return 1;
+    }
+
+    private class BannerViewHolder extends RecyclerView.ViewHolder {
+
+        private final Banner bannerid;
+
+        public BannerViewHolder(View view) {
+            super(view);
+            bannerid = view.findViewById(R.id.home_banner);
+        }
+    }
+}

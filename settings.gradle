@@ -1,0 +1,3 @@
+include ':mvplivrary'
+include ':app'
+rootProject.name = "XingTanDemo"
